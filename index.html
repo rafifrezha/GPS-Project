@@ -567,31 +567,26 @@
     <script src="assets/js/main.js"></script>
     
     <script>
-      // Initialize map
       let map = tt.map({
-        key: "CAutCdXlTIj2fP9oIuaDbn0X3tCHa4lG", // API key Anda
+        key: "CAutCdXlTIj2fP9oIuaDbn0X3tCHa4lG",
         container: "map",
-        center: [110.3626, -7.7956], // Koordinat Yogyakarta
+        center: [110.3626, -7.7956],
         zoom: 10,
       });
     
       let markers = [];
       let lng, lat;
-      let religion = "Islam"; // Default agama
+      let religion = "Islam";
     
-      // Update religion based on selection
       function updateReligion() {
         religion = document.getElementById("religionSelect").value;
       }
     
-      // Find nearby places based on religion
       async function findNearbyPlaces() {
-        // Clear previous markers and places
         markers.forEach((marker) => marker.remove());
         markers = [];
         document.getElementById("places").innerHTML = "";
     
-        // Determine keyword based on religion
         const keywords = {
           Islam: "masjid",
           Kristen: "gereja kristen",
@@ -608,7 +603,6 @@
             const userLatitude = position.coords.latitude;
             const userLongitude = position.coords.longitude;
     
-            // Add user location marker
             new tt.Marker({ color: "blue" })
               .setLngLat([userLongitude, userLatitude])
               .addTo(map);
@@ -624,26 +618,25 @@
                 const marker = new tt.Marker().setLngLat(placePosition).addTo(map);
                 markers.push(marker);
     
-                // Add place to the list
+
                 const listItem = document.createElement("li");
                 listItem.className = "list-group-item";
                 listItem.innerHTML = `${place.poi.name} - ${place.address.freeformAddress}`;
                 document.getElementById("places").appendChild(listItem);
     
-                // Marker click event
+                
                 marker.getElement().onclick = function () {
-                  // Hapus marker merah sebelumnya jika ada
                   if (window.selectedMarker) {
                     window.selectedMarker.remove();
                   }
 
-                  // Tambahkan marker merah pada posisi yang dipilih
+                  
                   window.selectedMarker = new tt.Marker({ color: "red" })
                     .setLngLat(placePosition)
                     .addTo(map);
 
                   markers.forEach((marker) => {
-                    marker.getElement().style.backgroundColor = "transparent"; // Kembalikan warna latar belakang
+                    marker.getElement().style.backgroundColor = "transparent";
                   });
 
                   [lng, lat] = placePosition;
@@ -660,14 +653,12 @@
                   });
                 };
     
-                // Add popup for the marker
                 new tt.Popup({ offset: 30 })
                   .setLngLat(placePosition)
                   .setHTML(`<h12>${place.poi.name}</h12>`)
                   .addTo(map);
               });
     
-              // Fly to user's location
               map.flyTo({
                 center: [userLongitude, userLatitude],
                 zoom: 14,
@@ -681,7 +672,6 @@
         }
       }
     
-      // Calculate route from user's location to selected place
       async function calculateRoute() {
         if (!lng || !lat) {
           Swal.fire({
@@ -708,7 +698,6 @@
               const distance = data.routes[0].summary.lengthInMeters;
               const travelTime = data.routes[0].summary.travelTimeInSeconds;
     
-              // Remove existing route layer if it exists
               if (map.getLayer("route")) {
                 map.removeLayer("route");
               }
@@ -716,7 +705,6 @@
                 map.removeSource("route");
               }
     
-              // Add new route layer
               map.addSource("route", {
                 type: "geojson",
                 data: {
@@ -743,7 +731,6 @@
                 },
               });
     
-              // Show route information
               Swal.fire({
                 title: "Rute Ditemukan",
                 html: `
@@ -762,13 +749,11 @@
         }
       }
     
-      // Reset map to initial state
       function resetMap() {
         markers.forEach((marker) => marker.remove());
         markers = [];
-        document.getElementById("places").innerHTML = ""; // Clear places list
+        document.getElementById("places").innerHTML = "";
     
-        // Remove existing route layer if it exists
         if (map.getLayer("route")) {
           map.removeLayer("route");
         }
@@ -776,14 +761,12 @@
           map.removeSource("route");
         }
     
-        // Reset to initial coordinates and zoom level
         map.flyTo({
-          center: [110.3626, -7.7956], // Koordinat Yogyakarta
+          center: [110.3626, -7.7956],
           zoom: 10,
         });
       }
     
-      // Add navigation control to the map
       map.addControl(new tt.NavigationControl());
     </script>
   </body>
